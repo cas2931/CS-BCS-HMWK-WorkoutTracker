@@ -1,42 +1,52 @@
-const Workout = require("../models/workoutModel.js");  
-const router = require("express").Router();
+const Workout = require("../models/workoutModel.js")
 
-router.get("/api/workouts", (req, res) => {
-  Workout.find()
-    .then(workouts => res.json(workouts))
-    .catch(err => res.json(err));
-});
+module.exports = function(app){ 
+    app.get("/api/workouts",function(req,res){  
+        Workout.find()
+        .then(data =>{  
+            res.json(data)
+        })
+        .catch(err => { 
+            res.json(err)
+        })
+    });
 
-router.put("/api/workouts/:id", (req, res) => {
-  Workout.findByIdAndUpdate(
-    req.params.id,
-    { $push: { exercises: req.body } },
-    { new: true }
-  )
-    .then(workout => res.json(workout))
-    .catch(err => res.json(err));
-});
+    app.post("/api/workouts",function (req,res){    
+        Workout.create({})
+        .then(data => res.json(data))
+        .catch(err => { 
+            res.json(err)
+        })
+    });
 
-router.post("/api/workouts", (req, res) => {
-  Workout.create({
-    day: Date.now()
-  })
-    .then(newWorkout => {
-      res.json(newWorkout);
-    })
-    .catch(err => res.json(err));
-});
+    app.get("/api/workouts/range",function(req,res){  
+        Workout.find()
+        .then(data =>{  
+            res.json(data)
+        })
+        .catch(err => { 
+            res.json(err)
+        })
+    });
 
-router.get("/api/workouts/range", (req, res) => {
-  Workout.find({})
-    .then(workouts => {
-      res.json(workouts);
-    })
-    .catch(err => res.json(err));
-});
 
-router.delete("/api/workouts", (req, res) => {
-  // I sawthe demand in the homework to add a delete route but i couldn't find this functoinality in the frontend
-});
+    app.post("/api/workouts/range",function (req,res){    
+        Workout.create({})
+        .then(data => res.json(data))
+        .catch(err => { 
+            res.json(err)
+        })
+    });
 
-module.exports = router;
+    app.put("/api/workouts/:id",({body,params},res)=>{   
+        Workout.findByIdAndUpdate(  
+         params.id,
+         {$push:{exercises:body} },
+         {new: true,runValidators:true }
+        )
+        .then(data => res.json(data))
+        .catch(err => { 
+            res.json(err)
+        })
+    });
+}
